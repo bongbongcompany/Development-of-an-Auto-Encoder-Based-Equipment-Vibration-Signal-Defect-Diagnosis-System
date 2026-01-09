@@ -1,0 +1,43 @@
+services:
+  ai-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.ai
+    ports:
+      - "8000:8000"
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  node-api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.node
+    ports:
+      - "3001:3001"
+    depends_on:
+      - ai-api
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/nutdb # 주소를 서비스 이름으로 변경
+    
+
+  frontend:
+    build:
+      context: .             
+      dockerfile: ./src/Dockerfile.frontend
+    container_name: frontend
+    ports:
+      - "5005:80"                # 5005로 접속하면 컨테이너 80(Nginx)으로 연결
+    depends_on:
+      - node-api
+      - ai-api
+    environment:
+      - VITE_NODE_PROXY=http://node-api:3001
+      - VITE_AI_PROXY=http://ai-api:8000
+volumes:
+  mongo-data:
