@@ -1,0 +1,23 @@
+# 1. 파이썬 환경 설정
+FROM python:3.11-slim
+
+# 2. 컨테이너 내부 경로 설정
+WORKDIR /app
+
+# 3. 필수 라이브러리 설치를 위한 환경 설정
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# 4. 의존성 파일 복사 및 설치
+# (이미지에 보이는 requirements.txt를 활용합니다)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 5. 전체 소스 코드 복사
+COPY . .
+
+# 6. FastAPI 서버 실행
+# (이미지의 app.py 실행 규격에 맞춤)
+EXPOSE 8000
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
