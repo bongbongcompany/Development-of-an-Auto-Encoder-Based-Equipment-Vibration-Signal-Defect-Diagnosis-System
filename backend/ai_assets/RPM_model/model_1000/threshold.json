@@ -1,0 +1,11 @@
+{
+  "rpm": "1000",
+  "train_cases": [
+    0
+  ],
+  "threshold_method": "p95(train_recon_error)",
+  "threshold": 0.033950451761484146,
+  "train_err_mean": 0.012830954976379871,
+  "train_err_p95": 0.033950451761484146,
+  "train_err_p99": 0.034618228673934937
+}
